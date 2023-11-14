@@ -9,11 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Emmanuel" />
+<meta name="author" content="Emmanuel Opoku." />
 
 <meta name="date" content="2023-11-14" />
 
-<title>index</title>
+<title>Beer Analysis</title>
 
 <script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -262,35 +262,88 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">index</h1>
-<h4 class="author">Emmanuel</h4>
+<h1 class="title toc-ignore">Beer Analysis</h1>
+<h4 class="author">Emmanuel Opoku.</h4>
 <h4 class="date">2023-11-14</h4>
 
 </div>
 
 
-<div id="a-little-about-me" class="section level1">
-<h1>A little about me</h1>
-<p>My name is Emmanuel.<br></p>
-<div class="float">
-<img
-src="C:/Users/hp/Pictures/Pictures/New%20folder%20(2)/IMG_20140930_074149.jpg"
-style="width:40.0%" alt="Here is one of my favorite pictures" />
-<div class="figcaption">Here is one of my favorite pictures</div>
+<div id="packages" class="section level1">
+<h1>Packages</h1>
 </div>
-<p>I am from Texas.<br><br />
-My interests are sports, travelling and Science.<br><br />
-I work in Finance. <br><br />
-Here is a link to my linkedin: <a
-href="https://www.linkedin.com/in/emmanuel-opoku-mba-pmp-02051750/">LinkedIN</a>.<br><br />
-<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
-</div>
-<div class="footnotes footnotes-end-of-document">
-<hr />
-<ol>
-<li id="fn1"><p>Please Check other tabs for more work<a href="#fnref1"
-class="footnote-back">↩︎</a></p></li>
-</ol>
+<div id="data-import-from-csv" class="section level1">
+<h1>Data Import from csv</h1>
+<pre class="r"><code>#import Beer_data
+Beer_Data = read.csv(file.choose(),header = TRUE)
+Beer_Data$Style = factor(Beer_Data$Style)
+
+# replacing missing values of ABV with median ABV values
+Beer_Data$ABV[which(is.na(Beer_Data$ABV))] = median(Beer_Data$ABV, na.rm = TRUE)
+
+# replacing missing values of IBU with median IBU values
+Beer_Data$IBU[which(is.na(Beer_Data$IBU))] = median(Beer_Data$IBU, na.rm = TRUE)
+
+
+Brewery_data = read.csv(file.choose(),header = TRUE)
+
+# Renaming from Brew_id to Brewery_id to match 
+Brewery_data &lt;- Brewery_data %&gt;%
+  rename(Brewery_id = Brew_ID)
+
+
+
+Beer_Brewery= Beer_Data %&gt;% inner_join(Brewery_data,by=&quot;Brewery_id&quot;)
+Beer_Brewery$Ounces = factor(Beer_Brewery$Ounces)</code></pre>
+<pre class="r"><code>#Create a histogram of IBU
+ggplot(data = Beer_Data, aes(x = IBU)) +
+  geom_histogram(fill = &quot;skyblue&quot;, color = &quot;black&quot;, alpha = 0.7) +
+  
+  # Add labels and titles
+  labs(title = &quot;Histogram of ABU&quot;,
+       x = &quot;IBU&quot;,
+       y = &quot;Frequency&quot;) +
+  
+  # Customize theme
+  theme_minimal()</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="Beer-analysis_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Create a histogram of ABV</p>
+<pre class="r"><code>#Create a histogram of ABV
+ggplot(data = Beer_Data, aes(x = ABV)) +
+  geom_histogram(fill = &quot;skyblue&quot;, color = &quot;black&quot;, alpha = 0.7) +
+  
+  # Add labels and titles
+  labs(title = &quot;Histogram of ABV&quot;,
+       x = &quot;ABV&quot;,
+       y = &quot;Frequency&quot;) +
+  
+  # Customize theme
+  theme_minimal()</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="Beer-analysis_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Scatterplot of IBu vs ABV</p>
+<pre class="r"><code># Scatter plot
+ggplot(Beer_Data, aes(x = ABV, y = IBU)) +
+  geom_point(shape=1) +
+   geom_smooth(method=lm) + # add linear regression line
+  theme_bw() + 
+  scale_color_economist()+
+  theme(axis.text.x=element_text(size=rel(1.0)))+
+ggtitle(&quot;Correlation between ABV and IBU &quot;) +
+  labs(x=&quot;IBU&quot;,y=&quot;ABV&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="Beer-analysis_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code># Brewery Count by State
+Brewery_data %&gt;% ggplot(aes(x = State)) + geom_bar(stat = &quot;count&quot;, fill = &quot;skyblue&quot;) +
+  geom_text(stat=&#39;count&#39;,aes(label=after_stat(count)),vjust=-1) +
+  labs(
+    title = &quot;Number of Breweries in each State&quot;,
+    x = &quot;State&quot;,
+    y = &quot;Count of Breweries&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="Beer-analysis_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 
 

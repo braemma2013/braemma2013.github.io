@@ -1,0 +1,21 @@
+---
+title: "index"
+author: "Emmanuel"
+date: "2023-11-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# A little about me
+
+My name is Emmanuel.<br>    
+
+![Here is one of my favorite pictures](C:/Users/hp/Pictures/Pictures/New folder (2)/IMG_20140930_074149.jpg){width=40%}        
+
+I am from Texas.<br>      
+My interests are sports, travelling and Science.<br>      
+I work in Finance. <br>    
+Here is a link to my linkedin: [LinkedIN](https://www.linkedin.com/in/emmanuel-opoku-mba-pmp-02051750/).<br>    
+^[Please Check other tabs for more work]

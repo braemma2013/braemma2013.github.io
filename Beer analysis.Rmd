@@ -1,0 +1,106 @@
+---
+title: "Beer Analysis"
+author: "Emmanuel Opoku."
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Packages
+```{r Load_libraries, include = FALSE, echo = FALSE} 
+library(tidyverse)
+library(GGally)
+library(ggplot2)
+library(ggthemes)
+library("mice")
+library(dplyr)
+```
+
+
+# Data Import from csv
+```{r csv_import}
+#import Beer_data
+Beer_Data = read.csv(file.choose(),header = TRUE)
+Beer_Data$Style = factor(Beer_Data$Style)
+
+# replacing missing values of ABV with median ABV values
+Beer_Data$ABV[which(is.na(Beer_Data$ABV))] = median(Beer_Data$ABV, na.rm = TRUE)
+
+# replacing missing values of IBU with median IBU values
+Beer_Data$IBU[which(is.na(Beer_Data$IBU))] = median(Beer_Data$IBU, na.rm = TRUE)
+
+
+Brewery_data = read.csv(file.choose(),header = TRUE)
+
+# Renaming from Brew_id to Brewery_id to match 
+Brewery_data <- Brewery_data %>%
+  rename(Brewery_id = Brew_ID)
+
+
+
+Beer_Brewery= Beer_Data %>% inner_join(Brewery_data,by="Brewery_id")
+Beer_Brewery$Ounces = factor(Beer_Brewery$Ounces)
+
+
+```
+
+
+```{r}
+#Create a histogram of IBU
+ggplot(data = Beer_Data, aes(x = IBU)) +
+  geom_histogram(fill = "skyblue", color = "black", alpha = 0.7) +
+  
+  # Add labels and titles
+  labs(title = "Histogram of ABU",
+       x = "IBU",
+       y = "Frequency") +
+  
+  # Customize theme
+  theme_minimal()
+```
+
+Create a histogram of ABV
+```{r}
+#Create a histogram of ABV
+ggplot(data = Beer_Data, aes(x = ABV)) +
+  geom_histogram(fill = "skyblue", color = "black", alpha = 0.7) +
+  
+  # Add labels and titles
+  labs(title = "Histogram of ABV",
+       x = "ABV",
+       y = "Frequency") +
+  
+  # Customize theme
+  theme_minimal()
+```
+
+Scatterplot of IBu vs ABV
+```{r}
+# Scatter plot
+ggplot(Beer_Data, aes(x = ABV, y = IBU)) +
+  geom_point(shape=1) +
+   geom_smooth(method=lm) + # add linear regression line
+  theme_bw() + 
+  scale_color_economist()+
+  theme(axis.text.x=element_text(size=rel(1.0)))+
+ggtitle("Correlation between ABV and IBU ") +
+  labs(x="IBU",y="ABV")
+
+```
+```{r}
+# Brewery Count by State
+Brewery_data %>% ggplot(aes(x = State)) + geom_bar(stat = "count", fill = "skyblue") +
+  geom_text(stat='count',aes(label=after_stat(count)),vjust=-1) +
+  labs(
+    title = "Number of Breweries in each State",
+    x = "State",
+    y = "Count of Breweries"
+  ) +
+  theme_minimal()
+```
+
+
+
